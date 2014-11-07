@@ -7,20 +7,15 @@
   ENTRY_POINT                    = UefiMain
 
 
-
-
 [Sources]
   main.c
-
-
+  
 
 [Packages]
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
-
-  
+    
   
 [LibraryClasses]
   UefiApplicationEntryPoint
   UefiLib
-  PcdLib

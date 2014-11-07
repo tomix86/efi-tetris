@@ -1,12 +1,12 @@
 /*
-	Tetris w EFI
+Tetris w EFI
 
-	Projekt na przedmiot Oprogramowanie Systemowe
+Projekt na przedmiot Oprogramowanie Systemowe
 
-	Autorzy:
-	Krzysztof £ukasz Necel, 143301
-	Tomasz Gajger, 143218
-	*/
+Autorzy:
+Krzysztof £ukasz Necel, 143301
+Tomasz Gajger, 143218
+*/
 
 #include <Uefi.h>
 #include <Library/PcdLib.h>
@@ -29,8 +29,8 @@ BOOLEAN readSingleKey( EFI_SIMPLE_TEXT_INPUT_PROTOCOL* cin, EFI_INPUT_KEY* key )
 }
 
 EFI_STATUS EFIAPI UefiMain( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable ) {
-//	CHAR16 chartab[] = { 0, 0 };
-///	EFI_INPUT_KEY key;
+	//	CHAR16 chartab[] = { 0, 0 };
+	///	EFI_INPUT_KEY key;
 	EFI_SIMPLE_TEXT_INPUT_PROTOCOL* cin;
 	EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* cout;
 
@@ -38,14 +38,14 @@ EFI_STATUS EFIAPI UefiMain( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *Syst
 	cout = SystemTable->ConOut;
 
 	Print( L"Projekt OS 2014.\n:)" );
-/*	do {
-		if ( readSingleKey( cin, &key ) ) {
-			return EFI_PROTOCOL_ERROR;
-		}
+	/*	do {
+	if ( readSingleKey( cin, &key ) ) {
+	return EFI_PROTOCOL_ERROR;
+	}
 
-		chartab[ 0 ] = key.UnicodeChar;
+	chartab[ 0 ] = key.UnicodeChar;
 
-		Print( chartab );
+	Print( chartab );
 
 	} while ( key.ScanCode != SCAN_ESC );
 	*/
