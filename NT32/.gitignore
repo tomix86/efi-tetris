@@ -1,0 +1,5 @@
+*Debug
+*Release
+*.sdf
+*.v12.suo
+*.vcxproj.user

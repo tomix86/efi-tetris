@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{12CE2C27-2EB0-449D-9286-708509FEBC57}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <NMakeOutput>NT32.exe</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeBuildCommandLine>cd /D $(SolutionDir)..\EDK_II
+set WORKSPACE=$(SolutionDir)..\EDK_II
+call edksetup.bat
+build</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>cd /D $(SolutionDir)..\EDK_II
+set WORKSPACE=$(SolutionDir)..\EDK_II
+call edksetup.bat
+build clean
+build</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>cd /D $(SolutionDir)..\EDK_II
+set WORKSPACE=$(SolutionDir)..\EDK_II
+call edksetup.bat
+build clean</NMakeCleanCommandLine>
+    <IncludePath>$(SolutionDir)..\EDK_II\MdePkg\Include\Ia32;$(SolutionDir)..\EDK_II\ShellPkg\Include;$(SolutionDir)..\EDK_II\MdePkg\Include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <NMakeOutput>NT32.exe</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\board.c" />
+    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\game.c" />
+    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\main.c" />
+    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\piece.c" />
+    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris\main.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\tetris.inf" />
+    <None Include="..\..\EDK_II\MdeModulePkg\Application\tetris\tetris.inf" />
+    <None Include="..\..\EDK_II\MdeModulePkg\MdeModulePkg.dsc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\board.h" />
+    <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\game.h" />
+    <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\piece.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
