@@ -32,6 +32,18 @@
     <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris\Core.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris\Board.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris\Piece.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris\GameWindow.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\tetris.inf">
@@ -53,6 +65,18 @@
     </ClInclude>
     <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\piece.h">
       <Filter>Tetris reference files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris\Core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris\Board.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris\Piece.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris\GameWindow.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

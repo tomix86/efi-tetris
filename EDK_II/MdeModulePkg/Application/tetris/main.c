@@ -9,46 +9,49 @@ Tomasz Gajger, 143218
 */
 
 #include <Uefi.h>
-#include <Library/PcdLib.h>
+#include <Library/BaseMemoryLib.h>
 #include <Library/UefiLib.h>
-#include <Library/DebugLib.h>
 #include <Library/UefiApplicationEntryPoint.h>
+#include <Library/DebugLib.h>
+#include "Core.h"
 
-// returns false if error occured
-BOOLEAN readSingleKey( EFI_SIMPLE_TEXT_INPUT_PROTOCOL* cin, EFI_INPUT_KEY* key ) {
+void prepareConsole( IN EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* cout, OUT EFI_SIMPLE_TEXT_OUTPUT_MODE* modeToStore ) {
 	EFI_STATUS status;
+	CopyMem( modeToStore, cout->Mode, sizeof( EFI_SIMPLE_TEXT_OUTPUT_MODE ) );
 
+	status = cout->EnableCursor( cout, FALSE ) ;
+	if ( status != EFI_UNSUPPORTED ) { // workaround
+		ASSERT_EFI_ERROR( status );
+	}
 
-	__debugbreak();
-	do {
-		status = cin->ReadKeyStroke( cin, key );
-	} while ( !( status == EFI_SUCCESS || status == EFI_NOT_READY ) );
+	ASSERT_EFI_ERROR( cout->ClearScreen( cout ) );
+	ASSERT_EFI_ERROR( cout->SetAttribute( cout, EFI_TEXT_ATTR( EFI_LIGHTGRAY, EFI_BLACK ) ) );
+	ASSERT_EFI_ERROR( cout->SetCursorPosition( cout, 0, 0 ) );
+}
 
-	ASSERT_EFI_ERROR( status );
-	return !EFI_ERROR( status );
+void restoreInitialConsoleMode( IN EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* cout, IN EFI_SIMPLE_TEXT_OUTPUT_MODE* storedMode ) {
+	ASSERT_EFI_ERROR( cout->EnableCursor( cout, storedMode->CursorVisible ));
+	ASSERT_EFI_ERROR( cout->SetCursorPosition( cout, storedMode->CursorColumn, storedMode->CursorRow ));
+	ASSERT_EFI_ERROR( cout->SetAttribute( cout, storedMode->Attribute ));
+	ASSERT_EFI_ERROR( cout->ClearScreen( cout ));
 }
 
 EFI_STATUS EFIAPI UefiMain( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable ) {
-	//	CHAR16 chartab[] = { 0, 0 };
-	///	EFI_INPUT_KEY key;
-	EFI_SIMPLE_TEXT_INPUT_PROTOCOL* cin;
-	EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* cout;
+	EFI_SIMPLE_TEXT_OUTPUT_MODE initialMode;
+	Core* core = NULL;
 
-	cin = SystemTable->ConIn;
-	cout = SystemTable->ConOut;
+	prepareConsole( SystemTable->ConOut, &initialMode );
+	ConstructCore( &core );
 
-	Print( L"Projekt OS 2014.\n:)" );
-	/*	do {
-	if ( readSingleKey( cin, &key ) ) {
-	return EFI_PROTOCOL_ERROR;
+	while ( core->gameState != GAME_STATE_EXIT ) {
+		core->handleInput( core );
+
+		core->drawWindow( core );
 	}
 
-	chartab[ 0 ] = key.UnicodeChar;
+	DestructCore( core );
 
-	Print( chartab );
-
-	} while ( key.ScanCode != SCAN_ESC );
-	*/
+	restoreInitialConsoleMode( SystemTable->ConOut, &initialMode );
 
 	return EFI_SUCCESS;
 }

@@ -64,7 +64,11 @@ build clean</NMakeCleanCommandLine>
     <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\game.c" />
     <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\main.c" />
     <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\piece.c" />
+    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris\Board.c" />
+    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris\Core.c" />
+    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris\GameWindow.c" />
     <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris\main.c" />
+    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris\Piece.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\tetris.inf" />
@@ -75,6 +79,10 @@ build clean</NMakeCleanCommandLine>
     <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\board.h" />
     <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\game.h" />
     <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\piece.h" />
+    <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris\Board.h" />
+    <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris\Core.h" />
+    <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris\GameWindow.h" />
+    <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris\Piece.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

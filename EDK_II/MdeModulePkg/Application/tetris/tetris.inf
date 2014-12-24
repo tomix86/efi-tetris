@@ -9,7 +9,10 @@
 
 [Sources]
   main.c
-  
+  Core.c
+  Board.c
+  Piece.c
+  GameWindow.c
 
 [Packages]
   MdePkg/MdePkg.dec
@@ -19,3 +22,6 @@
 [LibraryClasses]
   UefiApplicationEntryPoint
   UefiLib
+  UefiBootServicesTableLib 
+  MemoryAllocationLib 
+  BaseMemoryLib
