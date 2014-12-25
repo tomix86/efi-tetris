@@ -8,11 +8,7 @@ Krzysztof £ukasz Necel, 143301
 Tomasz Gajger, 143218
 */
 
-#include <Uefi.h>
-#include <Library/BaseMemoryLib.h>
-#include <Library/UefiLib.h>
-#include <Library/UefiApplicationEntryPoint.h>
-#include <Library/DebugLib.h>
+#include "CommonHeader.h"
 #include "Core.h"
 
 void prepareConsole( IN EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* cout, OUT EFI_SIMPLE_TEXT_OUTPUT_MODE* modeToStore ) {
@@ -29,6 +25,8 @@ void prepareConsole( IN EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* cout, OUT EFI_SIMPLE_TE
 	ASSERT_EFI_ERROR( cout->SetCursorPosition( cout, 0, 0 ) );
 }
 
+
+
 void restoreInitialConsoleMode( IN EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* cout, IN EFI_SIMPLE_TEXT_OUTPUT_MODE* storedMode ) {
 	ASSERT_EFI_ERROR( cout->EnableCursor( cout, storedMode->CursorVisible ));
 	ASSERT_EFI_ERROR( cout->SetCursorPosition( cout, storedMode->CursorColumn, storedMode->CursorRow ));
@@ -36,9 +34,13 @@ void restoreInitialConsoleMode( IN EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* cout, IN EFI
 	ASSERT_EFI_ERROR( cout->ClearScreen( cout ));
 }
 
+
+
 EFI_STATUS EFIAPI UefiMain( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable ) {
 	EFI_SIMPLE_TEXT_OUTPUT_MODE initialMode;
 	Core* core = NULL;
+	// to raczej nie jest potrzebne
+//	InitializeLib( ImageHandle, SystemTable );
 
 	prepareConsole( SystemTable->ConOut, &initialMode );
 	ConstructCore( &core );

@@ -5,6 +5,7 @@
 // periodic timer initializing constant (1mS = 10000)
 #define TIMER_PERIOD        100000
 #define GAME_REFRESH_PERIOD 10
+#define MAX_LEVEL 5
 
 typedef enum {
 	GAME_STATE_MENU,

@@ -13,6 +13,7 @@
   Board.c
   Piece.c
   GameWindow.c
+  CommonHeader.c
 
 [Packages]
   MdePkg/MdePkg.dec
