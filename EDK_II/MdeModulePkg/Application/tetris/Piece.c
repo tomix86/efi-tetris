@@ -1,23 +1,7 @@
-#include "CommonHeader.h"
 #include <Library/UefiRuntimeServicesTableLib.h>
 #include "Piece.h"
 
-unsigned rand( void ) {
-	int a = 69069;
-	int c = 1;
-	int M = 1 << 31;
-	static int previousValue;
-	static BOOLEAN initialized = FALSE;
-
-	if ( initialized == FALSE ) { // init dziala tak, ze nie dziala...
-		EFI_TIME time;
-		gRT->GetTime( &time, NULL );
-		previousValue = time.Second;
-		initialized = TRUE;
-	}
-
-	return previousValue = ( a*previousValue + c ) % M;
-}
+unsigned rand( void );
 
 
 
@@ -62,7 +46,7 @@ void randomize( Piece* this ) {
 			this->color = TETRIMINO_Z_COLOR;
 			break;
 		default:
-			__debugbreak();
+			ASSERT( FALSE );
 	}
 
 	CopyMem( &this->body, target, sizeof( Body ) );
@@ -71,8 +55,7 @@ void randomize( Piece* this ) {
 
 
 void rotate( Piece* this ) {
-	UINT8 tmp;
-	int i;
+	int i, tmp;
 
 	for ( i = 0; i<4; i++ ) {
 		tmp = this->body[ i ].x;
@@ -100,4 +83,23 @@ void ConstructPiece( Piece** this ) {
 
 void DestructPiece( Piece* this ) {
 	FreePool( this );
+}
+
+
+
+unsigned rand( void ) {
+	int a = 69069;
+	int c = 1;
+	int M = 1 << 31;
+	static int previousValue;
+	static BOOLEAN initialized = FALSE;
+
+	if ( initialized == FALSE ) { // init dziala tak, ze nie dziala...
+		EFI_TIME time;
+		gRT->GetTime( &time, NULL );
+		previousValue = time.Second;
+		initialized = TRUE;
+	}
+
+	return previousValue = ( a*previousValue + c ) % M;
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Uefi.h>
+#include "CommonHeader.h"
 
 // y
 // 1 . . . .
@@ -41,10 +41,6 @@
 //  XX
 #define TETRIMINO_Z_BODY { {0,1}, {1,0}, {1,1}, {2,0} }       
 #define TETRIMINO_Z_COLOR EFI_LIGHTMAGENTA
-
-typedef struct {
-	UINT8 x, y;
-} Point;
 
 typedef	Point Body[ 4 ];
 

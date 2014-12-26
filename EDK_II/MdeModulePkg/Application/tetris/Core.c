@@ -1,5 +1,8 @@
-#include "CommonHeader.h"
 #include "Core.h"
+
+void timerCallback( EFI_EVENT event, void* context );
+void togglePause( Core* this ); // w ktorym miejscu powinna byc zmienna paused... oraz jak obsluzyc koniec gry?
+
 
 void handleInput( Core* this ) {
 	EFI_INPUT_KEY key;
@@ -11,7 +14,7 @@ void handleInput( Core* this ) {
 		ASSERT_EFI_ERROR( status );
 
 		if ( key.UnicodeChar == 'p' || key.UnicodeChar == 'P' ) {
-			this->gameWindow->paused ^= 1;
+			togglePause( this );
 		}
 		else if ( key.UnicodeChar == ' ' ) {
 			this->gameWindow->board->dropPiece( this->gameWindow->board );
@@ -58,18 +61,6 @@ void drawWindow( Core* this ) {
 
 
 
-void timerCallback( EFI_EVENT event, void* context ) {
-	Core* core = context;
-	core->gameState;
-
-	/*
-	if ( Game->GameTimer )
-	Game->GameTimer--;
-	*/
-}
-
-
-
 void ConstructCore( Core** this ) {
 	Core* core = AllocatePool( sizeof( Core ) );
 	ZeroMem( core, sizeof( Core ) );
@@ -95,4 +86,31 @@ void DestructCore( Core* this ) {
 	ASSERT_EFI_ERROR( gBS->CloseEvent( this->timerEvent ) );
 	DestructGameWindow( this->gameWindow );
 	FreePool( this );
+}
+
+
+
+void timerCallback( EFI_EVENT event, void* context ) {
+	Core* core = context;
+	core->gameState;
+
+	/*
+	if ( Game->GameTimer )
+	Game->GameTimer--;
+	*/
+}
+
+
+
+void togglePause(Core* this) {
+	this->gameWindow->paused ^= 1;
+
+	setTextColor( EFI_GREEN );
+	setCursorPos( BOARD_TOP_X + BOARD_WIDTH - 5, 1 );
+	if ( this->gameWindow->paused ) {
+		Print( L"GAME PAUSED" );
+	}
+	else {
+		Print( L"           " );
+	}
 }
