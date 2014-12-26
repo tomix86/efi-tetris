@@ -9,26 +9,11 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Tetris reference files">
-      <UniqueIdentifier>{e82816e6-048f-447e-a9dd-a956201433dd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{933af8bb-61b7-46ef-a058-f43a01fe64bc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\board.c">
-      <Filter>Tetris reference files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\game.c">
-      <Filter>Tetris reference files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\main.c">
-      <Filter>Tetris reference files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\piece.c">
-      <Filter>Tetris reference files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -41,17 +26,11 @@
     <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris\Piece.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris\GameWindow.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\EDK_II\MdeModulePkg\Application\tetris\CommonHeader.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\tetris.inf">
-      <Filter>Tetris reference files</Filter>
-    </None>
     <None Include="..\..\EDK_II\MdeModulePkg\MdeModulePkg.dsc">
       <Filter>Resource Files</Filter>
     </None>
@@ -60,15 +39,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\board.h">
-      <Filter>Tetris reference files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\game.h">
-      <Filter>Tetris reference files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris ref\piece.h">
-      <Filter>Tetris reference files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris\Core.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -76,9 +46,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris\Piece.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris\GameWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\EDK_II\MdeModulePkg\Application\tetris\CommonHeader.h">

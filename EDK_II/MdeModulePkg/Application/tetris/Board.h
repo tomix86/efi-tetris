@@ -15,6 +15,22 @@
 #define PIECE_STARTING_POS { 4, 0 };
 #define EMPTY_FIELD EFI_BLACK
 
+#define DROP_BONUS_SCORE_PER_LINE 2
+#define LINE_CLEAR_SCORE 100
+#define LINE_CLEAR_LEVEL_BONUS_SCORE 50
+
+#define STATIC_TEXT L"\
+     CONTROLS\r\n\
+      P - Pause game\r\n\
+     <- - Move left\r\n\
+     -> - Move right\r\n\
+   Down - Move down\r\n\
+     Up - Rotate\r\n\
+  Space - Drop\r\n\
+  Pg Up - level up\r\n\
+Pg Down - level down\r\n\
+    ESC - Exit game\r\n"
+
 typedef struct _Board Board;
 
 typedef void( *DRAW_BOARD )( IN Board* this );
@@ -28,6 +44,10 @@ struct _Board {
 	Piece* nextPiece;
 	Piece* activePiece;
 	UINT8 fields[ BOARD_HEIGHT ][ BOARD_WIDTH ];
+	BOOLEAN blocked;
+	int level;
+	int lines;
+	int score;
 
 	DRAW_BOARD drawBoard;
 	ROTATE_ACTIVE_PIECE rotatePiece;

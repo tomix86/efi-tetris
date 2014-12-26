@@ -19,7 +19,7 @@ EFI_STATUS EFIAPI UefiMain( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *Syst
 	EFI_SIMPLE_TEXT_OUTPUT_MODE initialMode;
 	Core* core = NULL;
 	// to raczej nie jest potrzebne
-//	InitializeLib( ImageHandle, SystemTable );
+	//	InitializeLib( ImageHandle, SystemTable );
 
 	prepareConsole( SystemTable->ConOut, &initialMode );
 	ConstructCore( &core );

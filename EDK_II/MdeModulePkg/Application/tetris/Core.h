@@ -1,15 +1,17 @@
 #pragma once
 
-#include "GameWindow.h"
+#include "Board.h"
 
 // periodic timer initializing constant (1mS = 10000)
-#define TIMER_PERIOD        100000
-#define GAME_REFRESH_PERIOD 10
-#define MAX_LEVEL 5
+#define TIMER_PERIOD        100000 // sprawdzic dokladnie te czasy
+#define GAME_REFRESH_PERIOD 25
+#define MAX_LEVEL 6
 
 typedef enum {
-	GAME_STATE_MENU,
+	GAME_STATE_WAITING_FOR_START,
 	GAME_STATE_RUNNING,
+	GAME_STATE_PAUSED,
+	GAME_STATE_OVER,
 	GAME_STATE_EXIT
 } GAME_STATE;
 
@@ -20,8 +22,9 @@ typedef void( *DRAW_WINDOW )( IN Core* this );
 
 struct _Core {
 	GAME_STATE gameState;
-	GameWindow* gameWindow;
+	Board* board;
 	EFI_EVENT timerEvent;
+	int tickCounter;
 
 	HANDLE_INPUT handleInput;
 	DRAW_WINDOW drawWindow;

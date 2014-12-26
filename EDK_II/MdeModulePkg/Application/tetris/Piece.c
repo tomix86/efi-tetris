@@ -57,7 +57,7 @@ void randomize( Piece* this ) {
 void rotate( Piece* this ) {
 	int i, tmp;
 
-	for ( i = 0; i<4; i++ ) {
+	for ( i = 0; i < 4; i++ ) {
 		tmp = this->body[ i ].x;
 		this->body[ i ].x = ~( this->body[ i ].y ) & 3;
 		this->body[ i ].y = tmp;

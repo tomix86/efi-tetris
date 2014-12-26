@@ -12,7 +12,6 @@
   Core.c
   Board.c
   Piece.c
-  GameWindow.c
   CommonHeader.c
 
 [Packages]
