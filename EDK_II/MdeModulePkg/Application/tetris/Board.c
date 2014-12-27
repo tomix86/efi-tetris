@@ -1,8 +1,9 @@
 #include "Board.h"
 
 BOOLEAN isMovePossible( Board* this, int x, int y );
+void markFieldsOccupiedByPiece( Board* this, UINT8 fieldState );
+void drawFieldsOccupiedByPiece( Board* this, UINT8 color );
 void redrawField( Board* this, int x, int y, UINT8 color );
-void fillFieldsOccupiedByPieceWithColor( Board* this, UINT8 color );
 void drawNextUp( Board* this );
 void placePiece( Board* this );
 BOOLEAN isGameOver( Board* this );
@@ -27,52 +28,65 @@ void drawBoard( Board* this ) {
 
 
 void rotatePiece( Board* this ) {
-	fillFieldsOccupiedByPieceWithColor( this, EFI_BLACK );
+	markFieldsOccupiedByPiece( this, EMPTY_FIELD );
 
 	this->activePiece->rotateCW( this->activePiece );
 	if ( !isMovePossible( this, 0, 0 ) ) {
 		this->activePiece->rotateCCW( this->activePiece );
+		markFieldsOccupiedByPiece( this, this->activePiece->color );
+	}
+	else {
+		this->activePiece->rotateCCW( this->activePiece );
+		drawFieldsOccupiedByPiece( this, EFI_BLACK );
+		this->activePiece->rotateCW( this->activePiece );
+		drawFieldsOccupiedByPiece( this, this->activePiece->color );
 	}
 
-	fillFieldsOccupiedByPieceWithColor( this, this->activePiece->color );
+	
 }
 
 
 
 void movePieceLeft( Board* this ) {
-	fillFieldsOccupiedByPieceWithColor( this, EFI_BLACK );
-
+	markFieldsOccupiedByPiece( this, EMPTY_FIELD );
+	
 	if ( isMovePossible( this, -1, 0 ) ) {
+		drawFieldsOccupiedByPiece( this, EFI_BLACK );
 		this->activePiece->pos.x--;
+		drawFieldsOccupiedByPiece( this, this->activePiece->color );
 	}
 
-	fillFieldsOccupiedByPieceWithColor( this, this->activePiece->color );
+	markFieldsOccupiedByPiece( this, this->activePiece->color );
+
 }
 
 
 
 void movePieceRight( Board* this ) {
-	fillFieldsOccupiedByPieceWithColor( this, EFI_BLACK );
+	markFieldsOccupiedByPiece( this, EMPTY_FIELD );
 
 	if ( isMovePossible( this, 1, 0 ) ) {
+		drawFieldsOccupiedByPiece( this, EFI_BLACK );
 		this->activePiece->pos.x++;
+		drawFieldsOccupiedByPiece( this, this->activePiece->color );
 	}
 
-	fillFieldsOccupiedByPieceWithColor( this, this->activePiece->color );
+	markFieldsOccupiedByPiece( this, this->activePiece->color );
 }
 
 
 
 BOOLEAN movePieceDown( Board* this ) {
-	fillFieldsOccupiedByPieceWithColor( this, EFI_BLACK );
+	markFieldsOccupiedByPiece( this, EMPTY_FIELD );
 
 	if ( isMovePossible( this, 0, 1 ) ) {
+		drawFieldsOccupiedByPiece( this, EFI_BLACK );
 		this->activePiece->pos.y++;
-		fillFieldsOccupiedByPieceWithColor( this, this->activePiece->color );
+		drawFieldsOccupiedByPiece( this, this->activePiece->color );
 		return TRUE;
 	}
 	else {
-		fillFieldsOccupiedByPieceWithColor( this, this->activePiece->color );
+		markFieldsOccupiedByPiece( this, this->activePiece->color );
 		placePiece( this );
 		return FALSE;
 	}
@@ -145,6 +159,30 @@ BOOLEAN isMovePossible( Board* this, int x, int y ) {
 
 
 
+void markFieldsOccupiedByPiece( Board* this, UINT8 color ) {
+	int i, x, y;
+
+	for ( i = 0; i < 4; ++i ) {
+		x = ( *this->activePiece->body )[ i ].x + this->activePiece->pos.x;
+		y = ( *this->activePiece->body )[ i ].y + this->activePiece->pos.y;
+		this->fields[ y ][ x ] = color;
+	}
+}
+
+
+
+void drawFieldsOccupiedByPiece( Board* this, UINT8 color ) {
+	int i, x, y;
+
+	for ( i = 0; i < 4; ++i ) {
+		x = ( *this->activePiece->body )[ i ].x + this->activePiece->pos.x;
+		y = ( *this->activePiece->body )[ i ].y + this->activePiece->pos.y;
+		redrawField( this, x, y, color );
+	}
+}
+
+
+
 void redrawField( Board* this, int x, int y, UINT8 color ) {
 	ASSERT( x >= 0 && x < BOARD_WIDTH );
 	ASSERT( y >= 0 && y < BOARD_HEIGHT );
@@ -154,18 +192,6 @@ void redrawField( Board* this, int x, int y, UINT8 color ) {
 		setTextColor( color );
 		putchar( BOARD_TOP_X + 1 + 2 * x, BOARD_TOP_Y - INVISIBLE_ROWS_COUNT + y, BLOCKELEMENT_FULL_BLOCK );
 		putchar( BOARD_TOP_X + 1 + 2 * x + 1, BOARD_TOP_Y - INVISIBLE_ROWS_COUNT + y, BLOCKELEMENT_FULL_BLOCK );
-	}
-}
-
-
-
-void fillFieldsOccupiedByPieceWithColor( Board* this, UINT8 color ) {
-	int i, x, y;
-
-	for ( i = 0; i < 4; ++i ) {
-		x = ( *this->activePiece->body )[ i ].x + this->activePiece->pos.x;
-		y = ( *this->activePiece->body )[ i ].y + this->activePiece->pos.y;
-		redrawField( this, x, y, color );
 	}
 }
 
