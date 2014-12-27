@@ -4,6 +4,7 @@ void timerCallback( EFI_EVENT event, void* context );
 void togglePause( Core* this );
 void gameOver( Core* this );
 void startGame( Core* this );
+void resetTickCounter( Core* this );
 
 void handleInput( Core* this ) {
 	EFI_INPUT_KEY key;
@@ -17,14 +18,15 @@ void handleInput( Core* this ) {
 		if ( this->gameState == GAME_STATE_WAITING_FOR_START ) {
 			startGame( this );
 		}
-		else if ( key.UnicodeChar == 'p' || key.UnicodeChar == 'P' ) {
+		else if ( key.UnicodeChar == L'p' || key.UnicodeChar == L'P' ) {
 			if ( this->gameState == GAME_STATE_RUNNING || this->gameState == GAME_STATE_PAUSED ) {
 				togglePause( this );
 			}
 		}
-		else if ( key.UnicodeChar == ' ' ) {
+		else if ( key.UnicodeChar == L' ' ) {
 			if ( this->gameState == GAME_STATE_RUNNING ) {
 				this->board->dropPiece( this->board );
+				resetTickCounter( this );
 			}
 		}
 		else {
@@ -36,7 +38,9 @@ void handleInput( Core* this ) {
 					break;
 				case SCAN_DOWN:
 					if ( this->gameState == GAME_STATE_RUNNING ) {
-						this->board->movePieceDown( this->board );
+						if ( !this->board->movePieceDown( this->board ) ) {
+							resetTickCounter( this );
+						}
 					}
 					break;
 				case SCAN_LEFT:
@@ -53,12 +57,12 @@ void handleInput( Core* this ) {
 					this->gameState = GAME_STATE_EXIT;
 					break;
 				case SCAN_PAGE_UP:
-					if ( this->board->level < MAX_LEVEL ) {
+					if ( this->gameState != GAME_STATE_OVER && this->board->level < MAX_LEVEL ) {
 						this->board->level++;
 					}
 					break;
 				case SCAN_PAGE_DOWN:
-					if ( this->board->level > 1 ) {
+					if ( this->gameState != GAME_STATE_OVER && this->board->level > 1 ) {
 						this->board->level--;
 					}
 					break;
@@ -79,9 +83,7 @@ void drawWindow( Core* this ) {
 	if ( this->tickCounter == 0 ) {
 		this->board->movePieceDown( this->board );
 
-		//   lvl   1    2    3    4    5    6
-		//period 100%  90%  80%  70%  60%  50%
-		this->tickCounter = ( GAME_REFRESH_PERIOD * ( 11 - this->board->level ) ) / 10;
+		resetTickCounter( this );
 	}
 
 	this->board->drawBoard( this->board );
@@ -98,7 +100,7 @@ void ConstructCore( Core** this ) {
 	core->gameState = GAME_STATE_WAITING_FOR_START;
 	core->handleInput = handleInput;
 	core->drawWindow = drawWindow;
-	core->tickCounter = 0;
+	core->tickCounter = GAME_REFRESH_PERIOD;
 
 	// set up timer event
 	ASSERT_EFI_ERROR( gBS->CreateEventEx( EVT_TIMER | EVT_NOTIFY_SIGNAL, TPL_CALLBACK, timerCallback, core, NULL, &core->timerEvent ) );
@@ -164,4 +166,12 @@ void startGame( Core* this ) {
 	Print( L"                        " );
 
 	this->gameState = GAME_STATE_RUNNING;
+}
+
+
+
+void resetTickCounter( Core* this ) {
+	//    lvl   1    2   ...  10  
+	// period 100%  90%  ...  10%
+	this->tickCounter = ( GAME_REFRESH_PERIOD * ( 11 - this->board->level ) ) / 10;
 }

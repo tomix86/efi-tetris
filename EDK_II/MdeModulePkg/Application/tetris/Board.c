@@ -1,9 +1,8 @@
 #include "Board.h"
 
-BOOLEAN isMovePossible( Board* this, Piece* piece, int x, int y );
+BOOLEAN isMovePossible( Board* this, int x, int y );
 void redrawField( Board* this, int x, int y, UINT8 color );
-void clearFieldsOccupiedByPiece( Board* this );
-void drawPiece( Board* this );
+void fillFieldsOccupiedByPieceWithColor( Board* this, UINT8 color );
 void drawNextUp( Board* this );
 void placePiece( Board* this );
 BOOLEAN isGameOver( Board* this );
@@ -18,7 +17,7 @@ void drawBoard( Board* this ) {
 
 	setTextColor( EFI_LIGHTGRAY );
 	setCursorPos( NEXT_PIECE_FRAME_TOP_X + 8, NEXT_PIECE_FRAME_TOP_Y + NEXT_PIECE_FRAME_HEIGHT + 4 );
-	Print( L"%d", this->level );
+	Print( L"%d ", this->level );
 	setCursorPos( NEXT_PIECE_FRAME_TOP_X + 8, NEXT_PIECE_FRAME_TOP_Y + NEXT_PIECE_FRAME_HEIGHT + 5 );
 	Print( L"%d", this->lines );
 	setCursorPos( NEXT_PIECE_FRAME_TOP_X + 8, NEXT_PIECE_FRAME_TOP_Y + NEXT_PIECE_FRAME_HEIGHT + 6 );
@@ -28,48 +27,52 @@ void drawBoard( Board* this ) {
 
 
 void rotatePiece( Board* this ) {
-	Piece rotated = *this->activePiece;
+	fillFieldsOccupiedByPieceWithColor( this, EFI_BLACK );
 
-	rotated.rotate( &rotated );
-
-	clearFieldsOccupiedByPiece( this );
-	if ( isMovePossible( this, &rotated, 0, 0 ) ) { // nazwa mylaca - zmienic
-		*this->activePiece = rotated;
+	this->activePiece->rotateCW( this->activePiece );
+	if ( !isMovePossible( this, 0, 0 ) ) {
+		this->activePiece->rotateCCW( this->activePiece );
 	}
-	drawPiece( this );
+
+	fillFieldsOccupiedByPieceWithColor( this, this->activePiece->color );
 }
 
 
 
 void movePieceLeft( Board* this ) {
-	clearFieldsOccupiedByPiece( this );
-	if ( isMovePossible( this, this->activePiece, -1, 0 ) ) {
+	fillFieldsOccupiedByPieceWithColor( this, EFI_BLACK );
+
+	if ( isMovePossible( this, -1, 0 ) ) {
 		this->activePiece->pos.x--;
 	}
-	drawPiece( this );
+
+	fillFieldsOccupiedByPieceWithColor( this, this->activePiece->color );
 }
 
 
 
 void movePieceRight( Board* this ) {
-	clearFieldsOccupiedByPiece( this );
-	if ( isMovePossible( this, this->activePiece, 1, 0 ) ) {
+	fillFieldsOccupiedByPieceWithColor( this, EFI_BLACK );
+
+	if ( isMovePossible( this, 1, 0 ) ) {
 		this->activePiece->pos.x++;
 	}
-	drawPiece( this );
+
+	fillFieldsOccupiedByPieceWithColor( this, this->activePiece->color );
 }
 
 
 
 BOOLEAN movePieceDown( Board* this ) {
-	clearFieldsOccupiedByPiece( this );
-	if ( isMovePossible( this, this->activePiece, 0, 1 ) ) {
+	fillFieldsOccupiedByPieceWithColor( this, EFI_BLACK );
+
+	if ( isMovePossible( this, 0, 1 ) ) {
 		this->activePiece->pos.y++;
-		drawPiece( this );
+		fillFieldsOccupiedByPieceWithColor( this, this->activePiece->color );
 		return TRUE;
 	}
 	else {
-		drawPiece( this );
+		fillFieldsOccupiedByPieceWithColor( this, this->activePiece->color );
 		placePiece( this );
 		return FALSE;
 	}
@@ -102,6 +105,7 @@ void ConstructBoard( Board** this ) {
 	board->movePieceLeft = movePieceLeft;
 	board->movePieceRight = movePieceRight;
 	board->dropPiece = dropPiece;
+
 	ConstructPiece( &board->nextPiece );
 	ConstructPiece( &board->activePiece );
 
@@ -122,12 +126,12 @@ void DestructBoard( Board* this ) {
 
 
 
-BOOLEAN isMovePossible( Board* this, Piece* piece, int x, int y ) {
+BOOLEAN isMovePossible( Board* this, int x, int y ) {
 	int i, fx, fy;
 
 	for ( i = 0; i < 4; ++i ) {
-		fx = piece->body[ i ].x + piece->pos.x + x;
-		fy = piece->body[ i ].y + piece->pos.y + y;
+		fx = ( *this->activePiece->body )[ i ].x + this->activePiece->pos.x + x;
+		fy = ( *this->activePiece->body )[ i ].y + this->activePiece->pos.y + y;
 
 		if ( fx < 0 || fx >= BOARD_WIDTH ||
 			fy < 0 || fy >= BOARD_HEIGHT ||
@@ -145,35 +149,23 @@ void redrawField( Board* this, int x, int y, UINT8 color ) {
 	ASSERT( x >= 0 && x < BOARD_WIDTH );
 	ASSERT( y >= 0 && y < BOARD_HEIGHT );
 
-	if ( y > 0 ) {
+	if ( y >= INVISIBLE_ROWS_COUNT ) {
 		this->fields[ y ][ x ] = color;
 		setTextColor( color );
-		putchar( BOARD_TOP_X + 1 + 2 * x, BOARD_TOP_Y + y, BLOCKELEMENT_FULL_BLOCK );
-		putchar( BOARD_TOP_X + 1 + 2 * x + 1, BOARD_TOP_Y + y, BLOCKELEMENT_FULL_BLOCK );
+		putchar( BOARD_TOP_X + 1 + 2 * x, BOARD_TOP_Y - INVISIBLE_ROWS_COUNT + y, BLOCKELEMENT_FULL_BLOCK );
+		putchar( BOARD_TOP_X + 1 + 2 * x + 1, BOARD_TOP_Y - INVISIBLE_ROWS_COUNT + y, BLOCKELEMENT_FULL_BLOCK );
 	}
 }
 
 
 
-void clearFieldsOccupiedByPiece( Board* this ) {
+void fillFieldsOccupiedByPieceWithColor( Board* this, UINT8 color ) {
 	int i, x, y;
 
 	for ( i = 0; i < 4; ++i ) {
-		x = this->activePiece->body[ i ].x + this->activePiece->pos.x;
-		y = this->activePiece->body[ i ].y + this->activePiece->pos.y;
-		redrawField( this, x, y, EFI_BLACK );
-	}
-}
-
-
-// copypaste z gory much XD moze by tak to zmienic...
-void drawPiece( Board* this ) {
-	int i, x, y;
-
-	for ( i = 0; i < 4; ++i ) {
-		x = this->activePiece->body[ i ].x + this->activePiece->pos.x;
-		y = this->activePiece->body[ i ].y + this->activePiece->pos.y;
-		redrawField( this, x, y, this->activePiece->color );
+		x = ( *this->activePiece->body )[ i ].x + this->activePiece->pos.x;
+		y = ( *this->activePiece->body )[ i ].y + this->activePiece->pos.y;
+		redrawField( this, x, y, color );
 	}
 }
 
@@ -186,6 +178,7 @@ void drawNextUp( Board* this ) {
 	if ( this->nextPiece->color != previousPieceColor ) {
 		previousPieceColor = this->nextPiece->color;
 
+		setTextColor( EFI_BLACK );
 		for ( i = 1; i <= NEXT_PIECE_FRAME_WIDTH; ++i ) {
 			for ( j = 1; j <= NEXT_PIECE_FRAME_HEIGHT; ++j ) {
 				putchar( NEXT_PIECE_FRAME_TOP_X + i, NEXT_PIECE_FRAME_TOP_Y + j, L' ' );
@@ -194,7 +187,7 @@ void drawNextUp( Board* this ) {
 
 		setTextColor( this->nextPiece->color );
 
-		if ( this->nextPiece->color == TETRIMINO_I_COLOR || this->nextPiece->color == TETRIMINO_O_COLOR ) { // identyfikacja klockow po kolorze nie jest chyba zbyt elegancka...
+		if ( this->nextPiece->color == TETRIMINO_I_COLOR || this->nextPiece->color == TETRIMINO_O_COLOR ) { // color may be treated as piece's unique identifier
 			margin = 1;
 		}
 		else {
@@ -202,8 +195,8 @@ void drawNextUp( Board* this ) {
 		}
 
 		for ( i = 0; i < 4; ++i ) {
-			putchar( NEXT_PIECE_FRAME_TOP_X + margin + 2 * this->nextPiece->body[ i ].x, NEXT_PIECE_FRAME_TOP_Y + NEXT_PIECE_FRAME_HEIGHT - this->nextPiece->body[ i ].y, BLOCKELEMENT_FULL_BLOCK );
-			putchar( NEXT_PIECE_FRAME_TOP_X + margin + 2 * this->nextPiece->body[ i ].x + 1, NEXT_PIECE_FRAME_TOP_Y + NEXT_PIECE_FRAME_HEIGHT - this->nextPiece->body[ i ].y, BLOCKELEMENT_FULL_BLOCK );
+			putchar( NEXT_PIECE_FRAME_TOP_X + margin + 2 * ( *this->nextPiece->body )[ i ].x, NEXT_PIECE_FRAME_TOP_Y + 1 + ( *this->nextPiece->body )[ i ].y, BLOCKELEMENT_FULL_BLOCK );
+			putchar( NEXT_PIECE_FRAME_TOP_X + margin + 2 * ( *this->nextPiece->body )[ i ].x + 1, NEXT_PIECE_FRAME_TOP_Y + 1 + ( *this->nextPiece->body )[ i ].y, BLOCKELEMENT_FULL_BLOCK );
 		}
 	}
 }
@@ -225,7 +218,7 @@ void placePiece( Board* this ) {
 BOOLEAN isGameOver( Board* this ) {
 	int i;
 	for ( i = 0; i < 4; ++i ) {
-		if ( this->activePiece->body[ i ].y + this->activePiece->pos.y == 0 ) {
+		if ( ( *this->activePiece->body )[ i ].y + this->activePiece->pos.y < INVISIBLE_ROWS_COUNT ) {
 			return TRUE;
 		}
 	}
@@ -240,7 +233,7 @@ void checkAndRemoveLines( Board* this ) {
 	BOOLEAN lineWasFull;
 
 	// jak bedzie wolno dzialac mozna zrobic optymalizacje - przerywac w momencie wykrycia pustej linii
-	for ( i = BOARD_HEIGHT - 1; i > 0; --i ) {
+	for ( i = BOARD_HEIGHT - 1; i >= INVISIBLE_ROWS_COUNT; --i ) {
 		lineWasFull = TRUE;
 
 		for ( j = 0; j < BOARD_WIDTH; ++j ) {
@@ -327,14 +320,17 @@ void drawStaticElements( void ) {
 
 	// board frame
 	for ( i = 0; i < 2 * BOARD_WIDTH + 2; i++ ) {
-		putchar( BOARD_TOP_X + i, BOARD_TOP_Y + BOARD_HEIGHT, BOXDRAW_DOUBLE_HORIZONTAL );
+		putchar( BOARD_TOP_X + i, BOARD_TOP_Y - 1, BOXDRAW_DOUBLE_HORIZONTAL );
+		putchar( BOARD_TOP_X + i, BOARD_TOP_Y + BOARD_HEIGHT - INVISIBLE_ROWS_COUNT, BOXDRAW_DOUBLE_HORIZONTAL );
 	}
 
-	for ( i = 1; i < BOARD_HEIGHT; i++ ) {
+	for ( i = 0; i < BOARD_HEIGHT - INVISIBLE_ROWS_COUNT; i++ ) {
 		putchar( BOARD_TOP_X, BOARD_TOP_Y + i, BOXDRAW_DOUBLE_VERTICAL );
 		putchar( BOARD_TOP_X + 2 * BOARD_WIDTH + 1, BOARD_TOP_Y + i, BOXDRAW_DOUBLE_VERTICAL );
 	}
 
-	putchar( BOARD_TOP_X, BOARD_TOP_Y + BOARD_HEIGHT, BOXDRAW_DOUBLE_UP_RIGHT );
-	putchar( BOARD_TOP_X + 2 * BOARD_WIDTH + 1, BOARD_TOP_Y + BOARD_HEIGHT, BOXDRAW_DOUBLE_UP_LEFT );
+	putchar( BOARD_TOP_X, BOARD_TOP_Y - 1, BOXDRAW_DOUBLE_DOWN_RIGHT );
+	putchar( BOARD_TOP_X + 2 * BOARD_WIDTH + 1, BOARD_TOP_Y - 1, BOXDRAW_DOUBLE_DOWN_LEFT );
+	putchar( BOARD_TOP_X, BOARD_TOP_Y + BOARD_HEIGHT - INVISIBLE_ROWS_COUNT, BOXDRAW_DOUBLE_UP_RIGHT );
+	putchar( BOARD_TOP_X + 2 * BOARD_WIDTH + 1, BOARD_TOP_Y + BOARD_HEIGHT - INVISIBLE_ROWS_COUNT, BOXDRAW_DOUBLE_UP_LEFT );
 }

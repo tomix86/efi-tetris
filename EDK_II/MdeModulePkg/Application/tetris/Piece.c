@@ -6,15 +6,14 @@ unsigned rand( void );
 
 
 void randomize( Piece* this ) {
-	Body tetrimino_I = TETRIMINO_I_BODY;
-	Body tetrimino_J = TETRIMINO_J_BODY;
-	Body tetrimino_L = TETRIMINO_L_BODY;
-	Body tetrimino_O = TETRIMINO_O_BODY;
-	Body tetrimino_S = TETRIMINO_S_BODY;
-	Body tetrimino_T = TETRIMINO_T_BODY;
-	Body tetrimino_Z = TETRIMINO_Z_BODY;
-	Body* target = NULL;
-
+	static Bodies tetrimino_I = TETRIMINO_I_BODY;
+	static Bodies tetrimino_J = TETRIMINO_J_BODY;
+	static Bodies tetrimino_L = TETRIMINO_L_BODY;
+	static Bodies tetrimino_O = TETRIMINO_O_BODY;
+	static Bodies tetrimino_S = TETRIMINO_S_BODY;
+	static Bodies tetrimino_T = TETRIMINO_T_BODY;
+	static Bodies tetrimino_Z = TETRIMINO_Z_BODY;
+	Bodies* target = NULL;
 
 	switch ( rand() % 7 ) {
 		case 0:
@@ -49,19 +48,29 @@ void randomize( Piece* this ) {
 			ASSERT( FALSE );
 	}
 
-	CopyMem( &this->body, target, sizeof( Body ) );
+	CopyMem( &this->bodies, target, sizeof( Bodies ) );
+	this->rotation = 0;
+	this->body = &this->bodies[ 0 ];
 }
 
 
 
-void rotate( Piece* this ) {
-	int i, tmp;
+void rotateCW( Piece* this ) {
+	this->rotation = ( this->rotation + 1 ) % 4;
+	this->body = &this->bodies[ this->rotation ];
+}
 
-	for ( i = 0; i < 4; i++ ) {
-		tmp = this->body[ i ].x;
-		this->body[ i ].x = ~( this->body[ i ].y ) & 3;
-		this->body[ i ].y = tmp;
+
+
+void rotateCCW( Piece* this ) {
+	if ( this->rotation == 0 ) { // modulus operator for negative values is implementation dependant
+		this->rotation = 3;      // that's why we don't use it here
 	}
+	else {
+		this->rotation--;
+	}
+	this->body = &this->bodies[ this->rotation ];
+
 }
 
 
@@ -70,10 +79,16 @@ void ConstructPiece( Piece** this ) {
 	Piece* piece = AllocatePool( sizeof( Piece ) );
 	ZeroMem( piece, sizeof( Piece ) );
 
+	// seed before first actual call so we don't always get the same piece at the beggining
+	// dunno why it works this way
+	rand(); 
+
 	piece->randomize = randomize;
-	piece->rotate = rotate;
+	piece->rotateCW = rotateCW;
+	piece->rotateCCW = rotateCCW;
 	piece->pos.x = 0;
 	piece->pos.y = 0;
+	piece->body = &piece->bodies[ 0 ];
 	randomize( piece );
 
 	*this = piece;
@@ -88,13 +103,13 @@ void DestructPiece( Piece* this ) {
 
 
 unsigned rand( void ) {
-	int a = 69069;
-	int c = 1;
-	int M = 1 << 31;
-	static int previousValue;
+	static int a = 69069;
+	static int c = 1;
+	static int M = 1 << 31;
+	static unsigned previousValue;
 	static BOOLEAN initialized = FALSE;
 
-	if ( initialized == FALSE ) { // init dziala tak, ze nie dziala...
+	if ( initialized == FALSE ) {
 		EFI_TIME time;
 		gRT->GetTime( &time, NULL );
 		previousValue = time.Second;

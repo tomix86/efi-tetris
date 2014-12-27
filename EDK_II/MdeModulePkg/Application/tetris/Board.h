@@ -2,7 +2,8 @@
 
 #include "Piece.h"
 
-#define BOARD_HEIGHT 21
+#define BOARD_HEIGHT 22
+#define INVISIBLE_ROWS_COUNT 2
 #define BOARD_WIDTH  10
 #define BOARD_TOP_X  25
 #define BOARD_TOP_Y   3
