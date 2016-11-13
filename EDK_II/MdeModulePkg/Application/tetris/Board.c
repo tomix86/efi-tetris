@@ -41,15 +41,13 @@ void rotatePiece( Board* this ) {
 		this->activePiece->rotateCW( this->activePiece );
 		drawFieldsOccupiedByPiece( this, this->activePiece->color );
 	}
-
-	
 }
 
 
 
 void movePieceLeft( Board* this ) {
 	markFieldsOccupiedByPiece( this, EMPTY_FIELD );
-	
+
 	if ( isMovePossible( this, -1, 0 ) ) {
 		drawFieldsOccupiedByPiece( this, EFI_BLACK );
 		this->activePiece->pos.x--;
@@ -57,7 +55,6 @@ void movePieceLeft( Board* this ) {
 	}
 
 	markFieldsOccupiedByPiece( this, this->activePiece->color );
-
 }
 
 
@@ -258,7 +255,6 @@ void checkAndRemoveLines( Board* this ) {
 	int counter = 0;
 	BOOLEAN lineWasFull;
 
-	// jak bedzie wolno dzialac mozna zrobic optymalizacje - przerywac w momencie wykrycia pustej linii
 	for ( i = BOARD_HEIGHT - 1; i >= INVISIBLE_ROWS_COUNT; --i ) {
 		lineWasFull = TRUE;
 
@@ -274,7 +270,7 @@ void checkAndRemoveLines( Board* this ) {
 				redrawField( this, j, i, EFI_BLACK );
 			}
 
-			for ( j = i; j > 0; --j ) { // mozna zrobic optymalizacje - wypisywanie od razu calego wiersza
+			for ( j = i; j > 0; --j ) {
 				for ( k = 0; k < BOARD_WIDTH; ++k ) {
 					redrawField( this, k, j, this->fields[ j - 1 ][ k ] );
 				}
@@ -288,8 +284,8 @@ void checkAndRemoveLines( Board* this ) {
 	this->lines += counter;
 
 	if ( counter != 0 ) {
-		this->score += LINE_CLEAR_SCORE << ( counter - 1 ); // trolololo xD
-		this->score += LINE_CLEAR_LEVEL_BONUS_SCORE * this->level; //zmienic wartosc?
+		this->score += LINE_CLEAR_SCORE << ( counter - 1 );
+		this->score += LINE_CLEAR_LEVEL_BONUS_SCORE * this->level;
 	}
 }
 

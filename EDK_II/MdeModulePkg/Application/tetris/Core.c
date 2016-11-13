@@ -92,6 +92,7 @@ void drawWindow( Core* this ) {
 
 
 void ConstructCore( Core** this ) {
+	EFI_STATUS status;
 	Core* core = AllocatePool( sizeof( Core ) );
 	ZeroMem( core, sizeof( Core ) );
 
@@ -103,10 +104,12 @@ void ConstructCore( Core** this ) {
 	core->tickCounter = GAME_REFRESH_PERIOD;
 
 	// set up timer event
-	ASSERT_EFI_ERROR( gBS->CreateEventEx( EVT_TIMER | EVT_NOTIFY_SIGNAL, TPL_CALLBACK, timerCallback, core, NULL, &core->timerEvent ) );
+	status = gBS->CreateEventEx( EVT_TIMER | EVT_NOTIFY_SIGNAL, TPL_CALLBACK, timerCallback, core, NULL, &core->timerEvent );
+	ASSERT_EFI_ERROR( status );
 
 	// start the timer 
-	ASSERT_EFI_ERROR( gBS->SetTimer( core->timerEvent, TimerPeriodic, TIMER_PERIOD ) );
+	status = gBS->SetTimer( core->timerEvent, TimerPeriodic, TIMER_PERIOD );
+	ASSERT_EFI_ERROR( status );
 
 	gST->ConOut->SetAttribute( gST->ConOut, EFI_TEXT_ATTR( EFI_WHITE, EFI_RED ) );
 	setCursorPos( BOARD_TOP_X, 1 );
@@ -118,7 +121,8 @@ void ConstructCore( Core** this ) {
 
 
 void DestructCore( Core* this ) {
-	ASSERT_EFI_ERROR( gBS->CloseEvent( this->timerEvent ) );
+	EFI_STATUS status = gBS->CloseEvent( this->timerEvent );
+	ASSERT_EFI_ERROR( status );
 	DestructBoard( this->board );
 	FreePool( this );
 }

@@ -1,3 +1,5 @@
+ŒCIE¯KA, POD KTÓR¥ ZNADJUJE SIÊ PROJEKT NIE MO¯E MIEÆ SPACJI W NAZWACH FOLDERÓW - JAK BÊD¥ TO KOMPILACJA SIÊ NIE POWIEDZIE
+
 Po pierwszym buildzie zostanie utworzony plik EDK_II\Conf\target.txt
 
 Powinno siê zmieniæ w nim wartoœæ MAX_CONCURRENT_THREAD_NUMBER zgodnie z 

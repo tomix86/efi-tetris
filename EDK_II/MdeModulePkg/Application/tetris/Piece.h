@@ -56,7 +56,6 @@ struct _Piece {
 	Body* body;
 	int rotation;
 	UINT8 color; // must be unique for each piece type
-	Point rotationCentre;
 	Point pos;
 
 	RANDOMIZE_PIECE randomize;

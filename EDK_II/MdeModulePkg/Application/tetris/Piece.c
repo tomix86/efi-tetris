@@ -81,7 +81,7 @@ void ConstructPiece( Piece** this ) {
 
 	// seed before first actual call so we don't always get the same piece at the beggining
 	// dunno why it works this way
-	rand(); 
+	rand();
 
 	piece->randomize = randomize;
 	piece->rotateCW = rotateCW;

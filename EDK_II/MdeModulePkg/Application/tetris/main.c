@@ -18,8 +18,6 @@ void restoreInitialConsoleMode( IN EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* cout, IN EFI
 EFI_STATUS EFIAPI UefiMain( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable ) {
 	EFI_SIMPLE_TEXT_OUTPUT_MODE initialMode;
 	Core* core = NULL;
-	// to raczej nie jest potrzebne
-	//	InitializeLib( ImageHandle, SystemTable );
 
 	prepareConsole( SystemTable->ConOut, &initialMode );
 	ConstructCore( &core );
@@ -48,16 +46,25 @@ void prepareConsole( IN EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* cout, OUT EFI_SIMPLE_TE
 		ASSERT_EFI_ERROR( status );
 	}
 
-	ASSERT_EFI_ERROR( cout->ClearScreen( cout ) );
-	ASSERT_EFI_ERROR( cout->SetAttribute( cout, EFI_TEXT_ATTR( EFI_LIGHTGRAY, EFI_BLACK ) ) );
-	ASSERT_EFI_ERROR( cout->SetCursorPosition( cout, 0, 0 ) );
+	status = cout->ClearScreen( cout );
+	ASSERT_EFI_ERROR( status );
+	status = cout->SetAttribute( cout, EFI_TEXT_ATTR( EFI_LIGHTGRAY, EFI_BLACK ) );
+	ASSERT_EFI_ERROR( status );
+	status = cout->SetCursorPosition( cout, 0, 0 );
+	ASSERT_EFI_ERROR( status );
 }
 
 
 
 void restoreInitialConsoleMode( IN EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* cout, IN EFI_SIMPLE_TEXT_OUTPUT_MODE* storedMode ) {
-	ASSERT_EFI_ERROR( cout->EnableCursor( cout, storedMode->CursorVisible ) );
-	ASSERT_EFI_ERROR( cout->SetCursorPosition( cout, storedMode->CursorColumn, storedMode->CursorRow ) );
-	ASSERT_EFI_ERROR( cout->SetAttribute( cout, storedMode->Attribute ) );
-	ASSERT_EFI_ERROR( cout->ClearScreen( cout ) );
+	EFI_STATUS status;
+
+	status = cout->EnableCursor( cout, storedMode->CursorVisible );
+	ASSERT_EFI_ERROR( status );
+	status = cout->SetCursorPosition( cout, storedMode->CursorColumn, storedMode->CursorRow );
+	ASSERT_EFI_ERROR( status );
+	status = cout->SetAttribute( cout, storedMode->Attribute );
+	ASSERT_EFI_ERROR( status );
+	status = cout->ClearScreen( cout );
+	ASSERT_EFI_ERROR( status );
 }
